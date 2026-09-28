@@ -1,6 +1,48 @@
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 
+const URL = "" // ADD URL TO TEACHABLE MACHINE MODEL HERE
+
+let model, webcam, maxPredictions;
+
+async function initModel() {
+  const modelURL = URL + "model.json";
+  const metadataURL = URL + "metadata.json";
+
+  model = await tmImage.load(modelURL, metadataURL);
+  maxPredictions = model.getTotalClasses();
+
+  webcam = new tmImage.Webcam(200, 200, true);
+  await webcam.setup();
+  await webcam.play();
+  window.requestAnimationFrame(loopPrediction);
+
+  document.body.appendChild(webcam.canvas);
+}
+
+async function loopPrediction() {
+  webcam.update();
+  await predict();
+  window.requestAnimationFrame(loopPrediction);
+}
+
+async function predict() {
+  const prediction = await model.predict(webcam.canvas);
+
+  let highest = prediction.reduce((a, b) =>
+    a.probability > b.probability ? a : b
+  );
+
+  // Map class names → actions
+  if (highest.className === "Up") currentAction = "up";
+  else if (highest.className === "Down") currentAction = "down";
+  else currentAction = "idle";
+}
+
+initModel();
+
+
+
 let player = { x: 50, y: 200, size: 30 };
 let obstacles = [];
 
