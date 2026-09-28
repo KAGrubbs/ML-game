@@ -96,8 +96,26 @@ function update() {
     });
   }
 
+  // Check for collisions and end game if detected
+  obstacles.forEach((o) => {
+    if (checkCollision(player, o)) {
+      alert("Game Over!");
+      obstacles = [];
+      player.y = 200;
+    }
+  });
+
   // Remove offscreen
   obstacles = obstacles.filter((o) => o.x > -30);
+}
+
+function checkCollision(a, b) {
+  return (
+    a.x < b.x + b.size &&
+    a.x + a.size > b.x &&
+    a.y < b.y + b.size &&
+    a.y + a.size > b.y
+  );
 }
 
 function draw() {
