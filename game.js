@@ -1,23 +1,37 @@
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
+const status = document.getElementById("status");
+const actionDisplay = document.getElementById("action");
 
 const URL = ""; // ADD URL TO TEACHABLE MACHINE MODEL HERE
 
 let model, webcam, maxPredictions;
 
 async function initModel() {
-  const modelURL = URL + "model.json";
-  const metadataURL = URL + "metadata.json";
+  let startupStep = "loading model";
 
-  model = await tmImage.load(modelURL, metadataURL);
-  maxPredictions = model.getTotalClasses();
+  try {
+    const modelURL = URL + "model.json";
+    const metadataURL = URL + "metadata.json";
 
-  webcam = new tmImage.Webcam(200, 200, true);
-  await webcam.setup();
-  await webcam.play();
-  window.requestAnimationFrame(loopPrediction);
+    model = await tmImage.load(modelURL, metadataURL);
+    maxPredictions = model.getTotalClasses();
 
-  document.body.appendChild(webcam.canvas);
+    startupStep = "requesting camera permission";
+    webcam = new tmImage.Webcam(200, 200, true);
+    await webcam.setup();
+
+    startupStep = "starting camera video";
+    await webcam.play();
+    webcam.canvas.id = "webcam";
+    document.body.appendChild(webcam.canvas);
+    status.textContent = "Camera on. Show a trained pose to the camera.";
+    window.requestAnimationFrame(loopPrediction);
+  } catch (error) {
+    console.error("Unable to start the model or camera:", error);
+    const detail = error instanceof Error ? error.message : String(error);
+    status.textContent = `Startup failed while ${startupStep}: ${detail}`;
+  }
 }
 
 async function loopPrediction() {
@@ -33,10 +47,12 @@ async function predict() {
     a.probability > b.probability ? a : b,
   );
 
-  // Map class names → actions
-  if (highest.className === "Up") currentAction = "up";
-  else if (highest.className === "Down") currentAction = "down";
+  // Map class names to actions.
+  const className = highest.className.trim().toLowerCase();
+  if (className === "up") currentAction = "up";
+  else if (className === "down") currentAction = "down";
   else currentAction = "idle";
+  actionDisplay.textContent = `${currentAction} (${Math.round(highest.probability * 100)}%)`;
 }
 
 initModel();
