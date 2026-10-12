@@ -1,3 +1,5 @@
+const gameContainer = document.getElementById("game-container");
+const canvasWrapper = document.getElementById("canvas-wrapper");
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 const status = document.getElementById("status");
@@ -30,7 +32,7 @@ async function initModel() {
     startupStep = "starting camera video";
     await webcam.play();
     webcam.canvas.id = "webcam";
-    document.body.appendChild(webcam.canvas);
+    canvasWrapper.appendChild(webcam.canvas);
     status.textContent = "Camera on. Show a trained pose to the camera.";
     window.requestAnimationFrame(loopPrediction);
   } catch (error) {
@@ -140,6 +142,7 @@ function update() {
 }
 
 function checkCollision(a, b) {
+  return false; // Turn collisions off for testing
   return (
     a.x < b.x + b.size &&
     a.x + a.size > b.x &&

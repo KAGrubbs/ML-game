@@ -2,18 +2,27 @@
 <html>
   <head>
     <title>AI Game</title>
+    <link rel="stylesheet" type="text/css" href="styles.css" />
   </head>
 
   <body>
-    <canvas id="game" width="600" height="400"></canvas>
-    <div>
-        <input id="model-input" type="text" placeholder="Paste your Teachable Machine sharable link here"/>
-        <button id="load-model">Load model</button>
+    <div id="game-container">
+      <div id="canvas-wrapper">
+        <canvas id="game"></canvas>
+      </div>
+      <div id="center-div">
+        <div id="input-div">
+          <input
+            id="model-input"
+            type="text"
+            placeholder="Paste your Teachable Machine sharable link here"
+          />
+          <button id="load-model">Load model</button>
+        </div>
+        <p id="status">Starting camera...</p>
+      </div>
+      <p id="action-text">Detected action: <strong id="action">idle</strong></p>
     </div>
-    <p id="status">Starting camera...</p>
-    <p>Detected action: <strong id="action">idle</strong></p>
-
-
     <!-- TensorFlow and Teachable Machine -->
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8.4/dist/teachablemachine-image.min.js"></script>

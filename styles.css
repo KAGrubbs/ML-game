@@ -1,9 +1,81 @@
-#webcam {
+body {
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+}
+
+#game-container {
+    position: relative;
+    margin: 12px auto;
+    height: calc(100vh - 36px);
+}
+
+#canvas-wrapper {
+    position: relative;
+    width: max-content;
+    height: 100%;
+    margin: 0 auto;
+}
+
+#game {
     display: block;
-    margin-top: 12px;
+    position: relative;
+    height: 100%;
+    border: 1px solid #ccc;
+}
+
+#center-div {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    min-width: 70%;
+    max-width: 500px;
+}
+
+#input-div {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+#model-input {
+    padding: .25em;
+    height: 3em;
+    flex: 6;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+#load-model {
+    padding: .25em;
+    margin: 0;
+    height: 3em;
+    flex: 1;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+#webcam {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    height: 30%;
+    width: auto;
 }
 
 #status {
     min-height: 1.5em;
     font-family: sans-serif;
+}
+
+#action-text {
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translate(-50%, 0);
+    margin: auto;
 }
