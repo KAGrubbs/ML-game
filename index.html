@@ -6,8 +6,13 @@
 
   <body>
     <canvas id="game" width="600" height="400"></canvas>
+    <div>
+        <input id="model-input" type="text" placeholder="Paste your Teachable Machine sharable link here"/>
+        <button id="load-model">Load model</button>
+    </div>
     <p id="status">Starting camera...</p>
     <p>Detected action: <strong id="action">idle</strong></p>
+
 
     <!-- TensorFlow and Teachable Machine -->
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>

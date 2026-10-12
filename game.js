@@ -2,8 +2,14 @@ const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 const status = document.getElementById("status");
 const actionDisplay = document.getElementById("action");
+const modelInput = document.getElementById("model-input");
+const loadModelButton = document.getElementById("load-model");
+let URL = "";
 
-const URL = ""; // ADD URL TO TEACHABLE MACHINE MODEL HERE
+loadModelButton.addEventListener("click", () => {
+  URL = modelInput.value.trim();
+  initModel();
+});
 
 let model, webcam, maxPredictions;
 
