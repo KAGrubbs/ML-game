@@ -53,20 +53,20 @@ async function predict() {
     a.probability > b.probability ? a : b,
   );
 
-  // Map class names to actions.
+  // The model is expected to provide "up" and "idle" classes.
   const className = highest.className.trim().toLowerCase();
-  if (className === "up") currentAction = "up";
-  else if (className === "down") currentAction = "down";
-  else currentAction = "idle";
+  currentAction = className === "up" ? "up" : "idle";
   actionDisplay.textContent = `${currentAction} (${Math.round(highest.probability * 100)}%)`;
 }
 
 initModel();
 
-let player = { x: 50, y: 200, size: 30 };
+let player = { x: 50, y: 200, size: 30, velocityY: 0 };
 let obstacles = [];
 
 let currentAction = "idle";
+const UP_SPEED = 5;
+const GRAVITY = 0.5;
 
 let keys = {
   up: false,
@@ -90,21 +90,28 @@ function gameLoop() {
 }
 
 function update() {
-  // Move player based on AI or keyboard
+  // Move player based on keyboard or AI prediction.
   if (keys.up) {
-    player.y -= 5;
+    player.velocityY = 0;
+    player.y -= UP_SPEED;
   } else if (keys.down) {
-    player.y += 5;
+    player.velocityY = 0;
+    player.y += UP_SPEED;
   } else {
-    // If no keyboard input, use AI prediction
-    if (currentAction === "up") player.y -= 5;
-    if (currentAction === "down") player.y += 5;
+    if (currentAction === "up") {
+      player.velocityY = 0;
+      player.y -= UP_SPEED;
+    } else {
+      player.velocityY += GRAVITY;
+      player.y += player.velocityY;
+    }
   }
 
-  // Gravity-ish clamp
   if (player.y < 0) player.y = 0;
-  if (player.y > canvas.height - player.size)
+  if (player.y > canvas.height - player.size) {
     player.y = canvas.height - player.size;
+    player.velocityY = 0;
+  }
 
   // Move obstacles
   obstacles.forEach((o) => (o.x -= 3));
@@ -124,6 +131,7 @@ function update() {
       alert("Game Over!");
       obstacles = [];
       player.y = 200;
+      player.velocityY = 0;
     }
   });
 
