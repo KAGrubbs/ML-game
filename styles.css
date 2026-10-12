@@ -1,0 +1,9 @@
+#webcam {
+    display: block;
+    margin-top: 12px;
+}
+
+#status {
+    min-height: 1.5em;
+    font-family: sans-serif;
+}

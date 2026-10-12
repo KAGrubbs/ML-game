@@ -1,22 +1,10 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-
-<head>
+  <head>
     <title>AI Game</title>
-    <style>
-        #webcam {
-            display: block;
-            margin-top: 12px;
-        }
+  </head>
 
-        #status {
-            min-height: 1.5em;
-            font-family: sans-serif;
-        }
-    </style>
-</head>
-
-<body>
+  <body>
     <canvas id="game" width="600" height="400"></canvas>
     <p id="status">Starting camera...</p>
     <p>Detected action: <strong id="action">idle</strong></p>
@@ -26,6 +14,5 @@
     <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8.4/dist/teachablemachine-image.min.js"></script>
 
     <script src="game.js"></script>
-</body>
-
+  </body>
 </html>
