@@ -88,7 +88,16 @@ function resizeCanvas() {
 
   const entitySize = canvas.height * ENTITY_HEIGHT_RATIO;
   player.size = entitySize;
-  obstacles.forEach((obstacle) => (obstacle.size = entitySize));
+  obstacles.forEach((obstacle) => {
+    obstacle.width = entitySize;
+    obstacle.height = Math.min(
+      Math.max(obstacle.height, entitySize),
+      canvas.height / 2,
+    );
+    obstacle.y = obstacle.attachedToTop
+      ? 0
+      : canvas.height - obstacle.height;
+  });
   player.y = Math.min(player.y, canvas.height - player.size);
   obstacles = obstacles.filter((obstacle) => obstacle.x < canvas.width);
 }
@@ -147,12 +156,26 @@ function update() {
   obstacles.forEach((o) => (o.x -= 3));
 
   // Add obstacles
-  if (Math.random() < 0.02) {
-    const obstacleSize = canvas.height * ENTITY_HEIGHT_RATIO;
+  const rightmostObstacle = obstacles.reduce(
+    (rightmost, obstacle) =>
+      !rightmost || obstacle.x > rightmost.x ? obstacle : rightmost,
+    null,
+  );
+  const hasEnoughSpace =
+    !rightmostObstacle ||
+    canvas.width - (rightmostObstacle.x + rightmostObstacle.width) >=
+      player.size * 2;
+
+  if (hasEnoughSpace && Math.random() < 0.02) {
+    const obstacleHeight =
+      player.size + Math.random() * (canvas.height / 2 - player.size);
+    const attachedToTop = Math.random() < 0.5;
     obstacles.push({
       x: canvas.width,
-      y: Math.random() * (canvas.height - obstacleSize),
-      size: obstacleSize,
+      y: attachedToTop ? 0 : canvas.height - obstacleHeight,
+      width: player.size,
+      height: obstacleHeight,
+      attachedToTop,
     });
   }
 
@@ -167,15 +190,15 @@ function update() {
   });
 
   // Remove offscreen
-  obstacles = obstacles.filter((o) => o.x > -o.size);
+  obstacles = obstacles.filter((o) => o.x > -o.width);
 }
 
 function checkCollision(a, b) {
   return false; // Turn collisions off for testing
   return (
-    a.x < b.x + b.size &&
+    a.x < b.x + b.width &&
     a.x + a.size > b.x &&
-    a.y < b.y + b.size &&
+    a.y < b.y + b.height &&
     a.y + a.size > b.y
   );
 }
@@ -196,7 +219,7 @@ function draw() {
   // Obstacles
   ctx.fillStyle = "red";
   obstacles.forEach((o) => {
-    ctx.fillRect(o.x, o.y, o.size, o.size);
+    ctx.fillRect(o.x, o.y, o.width, o.height);
   });
 }
 
