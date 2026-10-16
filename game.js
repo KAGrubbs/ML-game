@@ -3,9 +3,10 @@ const canvasWrapper = document.getElementById("canvas-wrapper");
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 const statusText = document.getElementById("status");
+const actionText = document.getElementById("action-text");
 const actionDisplay = document.getElementById("action");
 const modelInput = document.getElementById("model-input");
-const inputDiv = document.getElementById("input-div");
+const centerDiv = document.getElementById("center-div");
 const loadModelButton = document.getElementById("load-model");
 let URL = "";
 let gameStarted = false;
@@ -39,7 +40,8 @@ async function initModel() {
     canvasWrapper.appendChild(webcam.canvas);
     gameStarted = true;
     statusText.textContent = "";
-    inputDiv.style.display = "none";
+    centerDiv.style.display = "none";
+    actionText.style.display = "block";
     window.requestAnimationFrame(loopPrediction);
   } catch (error) {
     gameStarted = false;
@@ -213,11 +215,11 @@ function draw() {
   }
 
   // Player
-  ctx.fillStyle = "blue";
+  ctx.fillStyle = "#27E007";
   ctx.fillRect(player.x, player.y, player.size, player.size);
 
   // Obstacles
-  ctx.fillStyle = "red";
+  ctx.fillStyle = "whitesmoke";
   obstacles.forEach((o) => {
     ctx.fillRect(o.x, o.y, o.width, o.height);
   });

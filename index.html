@@ -2,6 +2,12 @@
 <html>
   <head>
     <title>AI Game</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" type="text/css" href="styles.css" />
   </head>
 
@@ -11,13 +17,14 @@
         <canvas id="game"></canvas>
       </div>
       <div id="center-div">
+        <h1 class="orbitron-900">Start Game</h1>
         <div id="input-div">
           <input
             id="model-input"
             type="text"
             placeholder="Paste your Teachable Machine sharable link here"
           />
-          <button id="load-model">Load model</button>
+          <button id="load-model">Load Model ►</button>
         </div>
         <p id="status"></p>
       </div>
