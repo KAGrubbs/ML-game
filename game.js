@@ -2,16 +2,16 @@ const gameContainer = document.getElementById("game-container");
 const canvasWrapper = document.getElementById("canvas-wrapper");
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
-const status = document.getElementById("status");
+const statusText = document.getElementById("status");
 const actionDisplay = document.getElementById("action");
 const modelInput = document.getElementById("model-input");
+const inputDiv = document.getElementById("input-div");
 const loadModelButton = document.getElementById("load-model");
 let URL = "";
 let gameStarted = false;
 
 loadModelButton.addEventListener("click", () => {
   URL = modelInput.value.trim();
-  gameStarted = true;
   initModel();
 });
 
@@ -24,23 +24,28 @@ async function initModel() {
     const modelURL = URL + "model.json";
     const metadataURL = URL + "metadata.json";
 
+    statusText.textContent = "Loading model...";
     model = await tmImage.load(modelURL, metadataURL);
     maxPredictions = model.getTotalClasses();
 
+    statusText.textContent = "Model loaded. Requesting camera permission...";
     startupStep = "requesting camera permission";
     webcam = new tmImage.Webcam(200, 200, true);
     await webcam.setup();
-
+    statusText.textContent = "Starting camera video...";
     startupStep = "starting camera video";
     await webcam.play();
     webcam.canvas.id = "webcam";
     canvasWrapper.appendChild(webcam.canvas);
-    status.textContent = "Camera on. Show a trained pose to the camera.";
+    gameStarted = true;
+    statusText.textContent = "";
+    inputDiv.style.display = "none";
     window.requestAnimationFrame(loopPrediction);
   } catch (error) {
+    gameStarted = false;
     console.error("Unable to start the model or camera:", error);
     const detail = error instanceof Error ? error.message : String(error);
-    status.textContent = `Startup failed while ${startupStep}: ${detail}`;
+    statusText.textContent = `Startup failed while ${startupStep}: ${detail}`;
   }
 }
 
