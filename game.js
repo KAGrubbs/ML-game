@@ -13,6 +13,13 @@ let gameStarted = false;
 
 loadModelButton.addEventListener("click", () => {
   URL = modelInput.value.trim();
+  if (!URL) {
+    gameStarted = true;
+    actionText.textContent = "Use the arrow keys to move.";
+    centerDiv.style.display = "none";
+    actionText.style.display = "block";
+    return;
+  }
   initModel();
 });
 
