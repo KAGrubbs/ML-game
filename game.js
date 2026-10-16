@@ -7,9 +7,11 @@ const actionDisplay = document.getElementById("action");
 const modelInput = document.getElementById("model-input");
 const loadModelButton = document.getElementById("load-model");
 let URL = "";
+let gameStarted = false;
 
 loadModelButton.addEventListener("click", () => {
   URL = modelInput.value.trim();
+  gameStarted = true;
   initModel();
 });
 
@@ -61,14 +63,33 @@ async function predict() {
   actionDisplay.textContent = `${currentAction} (${Math.round(highest.probability * 100)}%)`;
 }
 
-initModel();
-
 let player = { x: 50, y: 200, size: 30, velocityY: 0 };
 let obstacles = [];
 
 let currentAction = "idle";
+const ENTITY_HEIGHT_RATIO = 1 / 6;
 const UP_SPEED = 5;
 const GRAVITY = 0.5;
+
+// Dynamically change canvas size on window resize
+function resizeCanvas() {
+  const width = canvasWrapper.clientWidth;
+  const height = canvasWrapper.clientHeight;
+
+  canvas.width = width;
+  canvas.height = height;
+  canvas.style.width = `${width}px`;
+  canvas.style.height = `${height}px`;
+
+  const entitySize = canvas.height * ENTITY_HEIGHT_RATIO;
+  player.size = entitySize;
+  obstacles.forEach((obstacle) => (obstacle.size = entitySize));
+  player.y = Math.min(player.y, canvas.height - player.size);
+  obstacles = obstacles.filter((obstacle) => obstacle.x < canvas.width);
+}
+
+window.addEventListener("resize", resizeCanvas);
+resizeCanvas();
 
 let keys = {
   up: false,
@@ -92,6 +113,8 @@ function gameLoop() {
 }
 
 function update() {
+  if (!gameStarted) return;
+
   // Move player based on keyboard or AI prediction.
   if (keys.up) {
     player.velocityY = 0;
@@ -120,10 +143,11 @@ function update() {
 
   // Add obstacles
   if (Math.random() < 0.02) {
+    const obstacleSize = canvas.height * ENTITY_HEIGHT_RATIO;
     obstacles.push({
       x: canvas.width,
-      y: Math.random() * (canvas.height - 30),
-      size: 30,
+      y: Math.random() * (canvas.height - obstacleSize),
+      size: obstacleSize,
     });
   }
 
@@ -138,7 +162,7 @@ function update() {
   });
 
   // Remove offscreen
-  obstacles = obstacles.filter((o) => o.x > -30);
+  obstacles = obstacles.filter((o) => o.x > -o.size);
 }
 
 function checkCollision(a, b) {
@@ -153,6 +177,12 @@ function checkCollision(a, b) {
 
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  if (!gameStarted) {
+    ctx.fillStyle = "black";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    return;
+  }
 
   // Player
   ctx.fillStyle = "blue";

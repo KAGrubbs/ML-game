@@ -2,26 +2,38 @@ body {
     margin: 0;
     padding: 0;
     font-family: sans-serif;
+    background-color: #333333;
+    overflow: hidden;
+}
+
+p {
+    color: #ffffff;
 }
 
 #game-container {
     position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     margin: 12px auto;
-    height: calc(100vh - 36px);
+    height: calc(100vh - 24px);
 }
 
 #canvas-wrapper {
     position: relative;
-    width: max-content;
-    height: 100%;
-    margin: 0 auto;
+    width: min(100%, calc((100vh - 24px) * 16 / 9));
+    height: auto;
+    aspect-ratio: 16 / 9;
+    max-height: 100%;
 }
 
 #game {
     display: block;
     position: relative;
+    width: 100%;
     height: 100%;
     border: 1px solid #ccc;
+    box-sizing: border-box;
 }
 
 #center-div {
